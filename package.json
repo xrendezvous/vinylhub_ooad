@@ -1,0 +1,36 @@
+{
+  "name": "vinylhub_ooad",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^1.12.2",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.23",
+    "@types/node": "^24.7.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xrendezvous/vinylhub_ooad.git"
+  },
+  "private": true,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xrendezvous/vinylhub_ooad/issues"
+  },
+  "homepage": "https://github.com/xrendezvous/vinylhub_ooad#readme",
+  "description": ""
+}
