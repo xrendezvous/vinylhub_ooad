@@ -1,18 +1,22 @@
+import { PaymentProvider } from "./PaymentProvider.js";
 import { PaymentStatus } from "../models/enums/PaymentStatus.js";
+import { Payment } from "../models/Payment.js";
 
-export class LiqPayFacade {
+export class LiqPayPaymentProvider extends PaymentProvider {
     async initiatePayment(payment) {
-        console.log("💳 Simulated LiqPay payment init:", payment.id);
-        return "https://liqpay.ua/simulated-checkout";
+        const paymentUrl = `https://www.liqpay.ua/api/checkout?amount=${payment.amount}&order_id=${payment.id}`;
+        return paymentUrl;
     }
 
     async checkStatus(paymentId) {
-        console.log("🔍 Checking status for", paymentId);
-        return PaymentStatus.COMPLETED;
+        const status = Math.random() > 0.5 ? "success" : "pending";
+        return status === "success" ? PaymentStatus.SUCCESS : PaymentStatus.PENDING;
     }
 
     async refund(paymentId) {
-        console.log("↩️ Refund requested:", paymentId);
+
         return true;
     }
 }
+
+
