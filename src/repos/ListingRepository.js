@@ -9,27 +9,25 @@ export class ListingRepository {
         return this.listings.some(l => l.vinylId === vinylId && l.sellerId === sellerId);
     }
 
-    async save(listingData) {
-        // якщо передали не об’єкт класу Listing — створимо його
-        const listing = listingData instanceof Listing ? listingData : new Listing(
-            listingData.id,
-            listingData.sellerId,
-            listingData.vinylId,
-            listingData.price,
-            listingData.currency,
-            listingData.status,
-            listingData.createdAt
-        );
-
-        this.listings.push(listing);
-        return listing;
-    }
-
-    async find(id) {
-        return this.listings.find(l => l.id === id) || null;
-    }
+    async findAll() { return Listing.findAll(); }
+    async findById(id) { return Listing.findByPk(id); }
 
     async findByUser(userId) {
         return this.listings.filter(l => l.sellerId === userId);
     }
+
+    async create(data) { return Listing.create(data); }
+    async update(id, data) {
+        const listing = await Listing.findByPk(id);
+        if (!listing) return null;
+        return listing.update(data);
+    }
+
+    async delete(id) {
+        const listing = await Listing.findByPk(id);
+        if (!listing) return null;
+        await listing.destroy();
+        return listing;
+    }
+
 }

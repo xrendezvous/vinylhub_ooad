@@ -1,32 +1,24 @@
-import { User } from "../models/User.js";
-import { Role } from "../models/enums/Role.js";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { randomUUID } from "crypto";
+import { UserRepository } from "../repos/UserRepository.js";
+
+const repo = new UserRepository();
 
 export class AuthService {
-    constructor(repo) {
-        this.repo = repo;
-    }
-
     async register(username, email, password) {
-        const user = new User(
-            randomUUID(),
-            username,
-            email,
-            Buffer.from(password).toString("base64"),
-            Role.USER,
-            new Date()
-        );
-        return await this.repo.save(user);
+        const hash = await bcrypt.hash(password, 10);
+        const user = await repo.create({ username, email, passwordHash: hash });
+        return user;
     }
 
-    async login(username, password) {
-        const users = this.repo.users; // Type casting TS видалено
-        const found = users.find(u => u.username === username);
-        if (!found || found.passwordHash !== Buffer.from(password).toString("base64")) {
-            throw new Error("Invalid credentials");
-        }
-        return jwt.sign({ id: found.id, role: found.role }, "SECRET", { expiresIn: "1h" });
+    async login(email, password) {
+        const user = await repo.findByEmail(email);
+        if (!user) throw new Error("User not found");
+        const match = await bcrypt.compare(password, user.passwordHash);
+        if (!match) throw new Error("Invalid credentials");
+
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        return { token, user };
     }
 }
 

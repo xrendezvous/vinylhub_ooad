@@ -1,13 +1,15 @@
-import { ListingStatus } from "./enums/ListingStatus.js";
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/database.js";
 
-export class Listing {
-    constructor(id, sellerId, vinylId, price, currency = "USD", status = ListingStatus.ACTIVE, createdAt = new Date()) {
-        this.id = id;
-        this.sellerId = sellerId;
-        this.vinylId = vinylId;
-        this.price = price;
-        this.currency = currency;
-        this.status = status;
-        this.createdAt = createdAt;
-    }
-}
+export const Listing = sequelize.define("Listing", {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    sellerId: { type: DataTypes.INTEGER, allowNull: false },
+    vinylId: { type: DataTypes.INTEGER, allowNull: false },
+    price: { type: DataTypes.FLOAT, allowNull: false },
+    currency: { type: DataTypes.STRING, defaultValue: "UAH" },
+    status: { type: DataTypes.ENUM("ACTIVE", "SOLD", "CANCELLED"), defaultValue: "ACTIVE" },
+}, {
+    tableName: "listings",
+    timestamps: true,
+});
+

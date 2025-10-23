@@ -1,11 +1,15 @@
-export class CollectionItem {
-    constructor(id, userId, vinylId, condition, notes, photos = [], addedAt = new Date()) {
-        this.id = id;
-        this.userId = userId;
-        this.vinylId = vinylId;
-        this.condition = condition;
-        this.notes = notes;
-        this.photos = photos;
-        this.addedAt = addedAt;
-    }
-}
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/database.js";
+
+export const CollectionItem = sequelize.define("CollectionItem", {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.INTEGER, allowNull: false },
+    vinylId: { type: DataTypes.INTEGER, allowNull: false },
+    condition: { type: DataTypes.STRING },
+    notes: { type: DataTypes.TEXT },
+    photos: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+}, {
+    tableName: "collection_items",
+    timestamps: true,
+});
+

@@ -1,9 +1,13 @@
-export class WishlistItem {
-    constructor(id, userId, vinylId = "", queryText = "", createdAt = new Date()) {
-        this.id = id;
-        this.userId = userId;
-        this.vinylId = vinylId;
-        this.queryText = queryText;
-        this.createdAt = createdAt;
-    }
-}
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/database.js";
+
+export const WishlistItem = sequelize.define("WishlistItem", {
+    id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
+    userId: { type: DataTypes.INTEGER, allowNull: false },
+    vinylId: { type: DataTypes.INTEGER },
+    queryText: { type: DataTypes.STRING },
+}, {
+    tableName: "wishlist_items",
+    timestamps: true,
+});
+
