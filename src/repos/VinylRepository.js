@@ -1,33 +1,29 @@
 import { Vinyl } from "../models/Vinyl.js";
 
 export class VinylRepository {
-    constructor() {
-        this.vinyls = [];
+    async findAll() {
+        return await Vinyl.findAll();
     }
 
     async findById(id) {
-        return this.vinyls.find(v => v.id === id) || null;
+        return await Vinyl.findByPk(id);
     }
 
-    async save(vinylData) {
-        const vinyl = vinylData instanceof Vinyl ? vinylData : new Vinyl(
-            vinylData.id,
-            vinylData.title,
-            vinylData.artist,
-            vinylData.year,
-            vinylData.label,
-            vinylData.genres
-        );
+    async create(vinylData) {
+        return await Vinyl.create(vinylData);
+    }
 
-        this.vinyls.push(vinyl);
+    async update(id, vinylData) {
+        const vinyl = await Vinyl.findByPk(id);
+        if (!vinyl) return null;
+        return await vinyl.update(vinylData);
+    }
+
+    async delete(id) {
+        const vinyl = await Vinyl.findByPk(id);
+        if (!vinyl) return null;
+        await vinyl.destroy();
         return vinyl;
     }
-
-    async search(query) {
-        const q = query.toLowerCase();
-        return this.vinyls.filter(v =>
-            v.title.toLowerCase().includes(q) ||
-            v.artist.toLowerCase().includes(q)
-        );
-    }
 }
+

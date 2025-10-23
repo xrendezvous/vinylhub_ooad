@@ -9,7 +9,7 @@ import { OrderController } from "./controllers/OrderController.js";
 import { PaymentService } from "./services/PaymentService.js";
 import { LiqPayFacade } from "./adapters/LiqPayFacade.js";
 import { EmailProvider } from "./adapters/EmailProvider.js";
-import { PaymentRepository } from "./repos/impl/PaymentRepository.js";
+import { PaymentRepository } from "./repos/PaymentRepository.js";
 
 const router = Router();
 
@@ -34,8 +34,11 @@ router.get("/profiles/:userId", (req, res) => profileController.getProfile(req, 
 router.get("/profiles/:userId/listings", (req, res) => profileController.getUserListings(req, res));
 
 // Vinyls
-router.get("/vinyls/:id", (req, res) => vinylController.getVinylById(req, res));
-router.get("/vinyls", (req, res) => vinylController.search(req, res));
+router.get("/vinyls", (req, res) => vinylController.getAll(req, res));
+router.get("/vinyls/:id", (req, res) => vinylController.getById(req, res));
+router.post("/vinyls", (req, res) => vinylController.create(req, res));
+router.put("/vinyls/:id", (req, res) => vinylController.update(req, res));
+router.delete("/vinyls/:id", (req, res) => vinylController.delete(req, res));
 
 // Wishlist
 router.post("/wishlist", (req, res) => wishlistController.addWishlist(req, res));
@@ -44,5 +47,5 @@ router.post("/wishlist", (req, res) => wishlistController.addWishlist(req, res))
 router.post("/order/pay", (req, res) => orderController.pay(req, res));
 router.post("/order/refund/:paymentId", (req, res) => orderController.refund(req, res));
 
-export { router as routes };
+export default router;
 

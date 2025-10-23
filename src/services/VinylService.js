@@ -1,13 +1,26 @@
+import { VinylRepository } from "../repos/VinylRepository.js";
+
+const vinylRepo = new VinylRepository();
+
 export class VinylService {
-    constructor(repo) {
-        this.repo = repo;
+    async getAll() {
+        return await vinylRepo.findAll();
     }
 
-    async getVinylById(id) {
-        return this.repo.findById(id);
+    async getById(id) {
+        return await vinylRepo.findById(id);
     }
 
-    async searchVinyl(query) {
-        return this.repo.search(query);
+    async create(data) {
+        return await vinylRepo.create(data);
+    }
+
+    async update(id, data) {
+        return await vinylRepo.update(id, data);
+    }
+
+    async delete(id) {
+        return await vinylRepo.delete(id);
     }
 }
+
