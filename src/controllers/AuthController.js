@@ -1,25 +1,25 @@
 import { AuthService } from "../services/AuthService.js";
-const service = new AuthService();
+
+const authService = new AuthService();
 
 export class AuthController {
-    register = async (req, res) => {
+    async register(req, res) {
         try {
-            const { username, email, password } = req.body;
-            const user = await service.register(username, email, password);
+            const { username, email, password, role } = req.body;
+            const user = await authService.register(username, email, password, role);
             res.status(201).json(user);
         } catch (err) {
             res.status(400).json({ error: err.message });
         }
     }
 
-    login = async (req, res) => {
+    async login(req, res) {
         try {
             const { email, password } = req.body;
-            const data = await service.login(email, password);
-            res.json(data);
+            const { token, user } = await authService.login(email, password);
+            res.json({ token, user });
         } catch (err) {
-            res.status(401).json({ error: err.message });
+            res.status(400).json({ error: err.message });
         }
     }
 }
-
