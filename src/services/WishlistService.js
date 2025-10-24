@@ -1,8 +1,9 @@
 import { WishlistItem } from "../models/WishlistItem.js";
 
 export class WishlistService {
-    constructor(repo) {
+    constructor(repo, userRepo) {
         this.repo = repo;
+        this.userRepo = userRepo;
     }
 
     async addWishlist(userId, vinylId, queryText) {
@@ -16,6 +17,13 @@ export class WishlistService {
 
     async findMatchesForListing(listing) {
         const wishes = await this.repo.findByVinyl(listing.vinylId);
-        return wishes.map(w => ({ id: w.userId }));
+        const uniqueUsers = new Map();
+        for (const w of wishes) {
+            if (!uniqueUsers.has(w.userId)) {
+                const user = await this.userRepo.findById(w.userId);
+                if (user) uniqueUsers.set(w.userId, user);
+            }
+        }
+        return Array.from(uniqueUsers.values());
     }
 }

@@ -1,11 +1,12 @@
-import { Listing } from "../models/Listing.js";
 import { ListingStatus } from "../models/enums/ListingStatus.js";
 
 export class ListingService {
-    constructor(repo, notif, wishlistService) {
+    constructor(repo, notif, wishlistService, userRepo, vinylRepo) {
         this.repo = repo;
         this.notif = notif;
         this.wishlistService = wishlistService;
+        this.userRepo = userRepo;
+        this.vinylRepo = vinylRepo;
     }
 
     async createListing(userId, vinylId, price, photos) {
@@ -22,8 +23,22 @@ export class ListingService {
         });
 
         const matchedUsers = await this.wishlistService.findMatchesForListing(listing);
+
         if (matchedUsers.length > 0) {
-            await this.notif.notifyUsers(matchedUsers.map(u => u.id), "A listing matches your wishlist!");
+            const vinyl = await this.vinylRepo.findById(vinylId);
+            const vinylTitle = vinyl ? vinyl.title : "your desired vinyl";
+
+            for (const user of matchedUsers) {
+                const foundUser = await this.userRepo.findById(user.id);
+                if (foundUser?.email) {
+                    await this.notif.sendWishlistMatch(
+                        foundUser.email,
+                        vinylTitle,
+                        price,
+                        "UAH"
+                    );
+                }
+            }
         }
 
         return listing;
