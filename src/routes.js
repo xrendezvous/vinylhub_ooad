@@ -5,47 +5,53 @@ import { ProfileController } from "./controllers/ProfileController.js";
 import { VinylController } from "./controllers/VinylController.js";
 import { WishlistController } from "./controllers/WishlistController.js";
 import { OrderController } from "./controllers/OrderController.js";
-
-import { PaymentService } from "./services/PaymentService.js";
-import { LiqPayFacade } from "./adapters/LiqPayFacade.js";
-import { EmailProvider } from "./adapters/EmailProvider.js";
-import { PaymentRepository } from "./repos/PaymentRepository.js";
+import { CollectionController } from "./controllers/CollectionController.js";
 
 const router = Router();
 
-const authController = new AuthController();
-const listingController = new ListingController();
-const profileController = new ProfileController();
-const vinylController = new VinylController();
-const wishlistController = new WishlistController();
-const orderController = new OrderController(
-    new PaymentService(new PaymentRepository(), new LiqPayFacade(), new EmailProvider())
-);
+const auth = new AuthController();
+const vinyl = new VinylController();
+const listing = new ListingController();
+const wishlist = new WishlistController();
+const collection = new CollectionController();
+const order = new OrderController();
+const profile = new ProfileController();
 
 // Auth
-router.post("/auth/register", (req, res) => authController.register(req, res));
-router.post("/auth/login", (req, res) => authController.login(req, res));
+router.post("/auth/register", (req, res) => auth.register(req, res));
+router.post("/auth/login", (req, res) => auth.login(req, res));
 
 // Listings
-router.post("/listings", (req, res) => listingController.createListing(req, res));
+router.post("/listings", (req, res) => listing.createListing(req, res));
+router.get("/listings", (req, res) => listing.getAll(req, res));
+router.get("/listings/:id", (req, res) => listing.getById(req, res));
+router.put("/listings/:id", (req, res) => listing.update(req, res));
+router.delete("/listings/:id", (req, res) => listing.delete(req, res));
 
 // Profiles
-router.get("/profiles/:userId", (req, res) => profileController.getProfile(req, res));
-router.get("/profiles/:userId/listings", (req, res) => profileController.getUserListings(req, res));
+router.get("/profile/:userId", (req, res) => profile.getProfile(req, res));
+router.get("/profile/:userId/listings", (req, res) => profile.getUserListings(req, res));
 
 // Vinyls
-router.get("/vinyls", (req, res) => vinylController.getAll(req, res));
-router.get("/vinyls/:id", (req, res) => vinylController.getById(req, res));
-router.post("/vinyls", (req, res) => vinylController.create(req, res));
-router.put("/vinyls/:id", (req, res) => vinylController.update(req, res));
-router.delete("/vinyls/:id", (req, res) => vinylController.delete(req, res));
+router.get("/vinyls", (req, res) => vinyl.getAll(req, res));
+router.get("/vinyls/:id", (req, res) => vinyl.getById(req, res));
+router.post("/vinyls", (req, res) => vinyl.create(req, res));
+router.put("/vinyls/:id", (req, res) => vinyl.update(req, res));
+router.delete("/vinyls/:id", (req, res) => vinyl.delete(req, res));
 
 // Wishlist
-router.post("/wishlist", (req, res) => wishlistController.addWishlist(req, res));
+router.post("/wishlist", (req, res) => wishlist.addWishlist(req, res));
+router.get("/wishlist/:userId", (req, res) => wishlist.getUserWishlist(req, res));
+
+// Collection
+router.post("/collection", (req, res) => collection.addItem(req, res));
+router.get("/collection/:userId", (req, res) => collection.getUserCollection(req, res));
+router.put("/collection/:id", (req, res) => collection.updateItem(req, res));
+router.delete("/collection/:id", (req, res) => collection.deleteItem(req, res));
 
 // Orders (Payments)
-router.post("/order/pay", (req, res) => orderController.pay(req, res));
-router.post("/order/refund/:paymentId", (req, res) => orderController.refund(req, res));
+router.post("/order/pay", (req, res) => order.pay(req, res));
+router.post("/order/refund/:paymentId", (req, res) => order.refund(req, res));
 
 export default router;
 
