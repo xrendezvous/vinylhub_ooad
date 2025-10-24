@@ -20,7 +20,7 @@ export const Vinyl = sequelize.define("Vinyl", {
     },
     price: {
         type: DataTypes.FLOAT,
-        allowNull: false
+        allowNull: true
     },
 }, {
     tableName: "vinyls",

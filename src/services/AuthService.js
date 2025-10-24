@@ -21,5 +21,3 @@ export class AuthService {
         return { token, user };
     }
 }
-
-module.exports = { AuthService };
