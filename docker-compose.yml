@@ -14,5 +14,16 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  app:
+    build: .
+    container_name: vinylhub_api
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file: .env
+    depends_on:
+      - db
+    command: [ "npm", "start" ]
+
 volumes:
   postgres_data:

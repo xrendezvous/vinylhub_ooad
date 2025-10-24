@@ -1,7 +1,11 @@
 import express from "express";
 import cors from "cors";
-import { connectDB } from "./config/database.js";
+import dotenv from "dotenv";
+import { connectDB } from "./config/db.js";
+import { seedDatabase } from "./config/seed.js";
 import routes from "./routes.js";
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -11,8 +15,16 @@ app.use("/api", routes);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, async () => {
-    await connectDB();
-    console.log("Server running on http://localhost:${PORT}");
-});
+const startServer = async () => {
+    try {
+        await connectDB();
+        await seedDatabase();
+        app.listen(PORT, () => {
+            console.log("Server running on http://localhost:${PORT}");
+        });
+    } catch (error) {
+        console.error("Failed to start server:", error);
+    }
+};
 
+startServer();
