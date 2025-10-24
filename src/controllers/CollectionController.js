@@ -1,5 +1,5 @@
 import { CollectionService } from "../services/CollectionService.js";
-import { CollectionRepository } from "../repositories/CollectionRepository.js";
+import { CollectionRepository } from "../repos/CollectionRepository.js";
 
 const collectionService = new CollectionService(new CollectionRepository());
 
