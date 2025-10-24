@@ -1,5 +1,5 @@
 import { WishlistService } from "../services/WishlistService.js";
-import { WishlistRepository } from "../repos/impl/WishlistRepository.js";
+import { WishlistRepository } from "../repos/WishlistRepository.js";
 
 const wishlistService = new WishlistService(new WishlistRepository());
 
@@ -11,6 +11,16 @@ export class WishlistController {
             res.status(201).json(item);
         } catch (err) {
             res.status(400).json({ error: err.message });
+        }
+    }
+
+    async getUserWishlist(req, res) {
+        try {
+            const { userId } = req.params;
+            const items = await wishlistService.repo.findByUser(userId);
+            res.json(items);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
         }
     }
 }

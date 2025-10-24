@@ -1,14 +1,19 @@
 import { PaymentService } from "../services/PaymentService.js";
+import { PaymentRepository } from "../repos/PaymentRepository.js";
+import { PaymentProvider } from "../adapters/PaymentProvider.js";
+import { EmailProvider } from "../adapters/EmailProvider.js";
+
+const paymentService = new PaymentService(
+    new PaymentRepository(),
+    new PaymentProvider(),
+    new EmailProvider()
+);
 
 export class OrderController {
-    constructor(paymentService) {
-        this.paymentService = paymentService;
-    }
-
     async pay(req, res) {
         try {
             const { buyerId, listingId } = req.body;
-            const payment = await this.paymentService.pay(buyerId, listingId);
+            const payment = await paymentService.pay(buyerId, listingId);
             res.json(payment);
         } catch (err) {
             res.status(400).json({ error: err.message });
@@ -18,7 +23,7 @@ export class OrderController {
     async refund(req, res) {
         try {
             const { paymentId } = req.params;
-            const result = await this.paymentService.refund(paymentId);
+            const result = await paymentService.refund(paymentId);
             res.json({ refunded: result });
         } catch (err) {
             res.status(400).json({ error: err.message });

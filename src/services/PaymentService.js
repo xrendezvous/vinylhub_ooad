@@ -9,29 +9,32 @@ export class PaymentService {
     }
 
     async pay(buyerId, listingId) {
-        const payment = new Payment(
-            buyerId,
+        const payment = await this.repo.save({
             buyerId,
             listingId,
-            250,
-            "USD",
-            PaymentStatus.PENDING,
-            new Date()
-        );
+            amount: 250,
+            currency: "USD",
+            status: PaymentStatus.PENDING,
+            createdAt: new Date()
+        });
 
-        await this.repo.save(payment);
         await this.provider.initiatePayment(payment);
         await this.notif.notifyUser(buyerId, "Payment initiated!");
         return payment;
     }
 
     async checkStatus(paymentId) {
-        return await this.provider.checkStatus(paymentId);
+        const status = await this.provider.checkStatus(paymentId);
+        await this.repo.updateStatus(paymentId, status);
+        return status;
     }
 
     async refund(paymentId) {
         const ok = await this.provider.refund(paymentId);
-        if (ok) await this.notif.notifyUser("admin", `Refunded ${paymentId}`);
+        if (ok) {
+            await this.repo.updateStatus(paymentId, PaymentStatus.REFUNDED);
+            await this.notif.notifyUser("admin", `Refunded ${paymentId}`);
+        }
         return ok;
     }
 }

@@ -1,5 +1,4 @@
 import { WishlistItem } from "../models/WishlistItem.js";
-import { randomUUID } from "crypto";
 
 export class WishlistService {
     constructor(repo) {
@@ -7,14 +6,12 @@ export class WishlistService {
     }
 
     async addWishlist(userId, vinylId, queryText) {
-        const item = new WishlistItem(
-            randomUUID(),
+        return await this.repo.save({
             userId,
-            vinylId || "",
-            queryText || "",
-            new Date()
-        );
-        return await this.repo.save(item);
+            vinylId: vinylId || null,
+            queryText: queryText || null,
+            createdAt: new Date()
+        });
     }
 
     async findMatchesForListing(listing) {

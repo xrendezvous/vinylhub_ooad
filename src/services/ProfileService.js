@@ -1,14 +1,14 @@
 export class ProfileService {
-    constructor(repo, listings) {
-        this.repo = repo;
-        this.listings = listings;
+    constructor(userRepo, listingRepo) {
+        this.userRepo = userRepo;
+        this.listingRepo = listingRepo;
     }
 
     async getProfile(userId) {
-        return await this.repo.findById(userId);
+        return await this.userRepo.findById(userId);
     }
 
     async getUserListings(userId) {
-        return await this.listings.findByUser(userId);
+        return await this.listingRepo.findByUser(userId);
     }
 }

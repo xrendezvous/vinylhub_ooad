@@ -1,26 +1,31 @@
 import { Listing } from "../models/Listing.js";
 
 export class ListingRepository {
-    constructor() {
-        this.listings = [];
-    }
-
     async existsConflict(vinylId, sellerId) {
-        return this.listings.some(l => l.vinylId === vinylId && l.sellerId === sellerId);
+        const count = await Listing.count({ where: { vinylId, sellerId } });
+        return count > 0;
     }
 
-    async findAll() { return Listing.findAll(); }
-    async findById(id) { return Listing.findByPk(id); }
+    async findAll() {
+        return await Listing.findAll();
+    }
+
+    async findById(id) {
+        return await Listing.findByPk(id);
+    }
 
     async findByUser(userId) {
-        return this.listings.filter(l => l.sellerId === userId);
+        return await Listing.findAll({ where: { sellerId: userId } });
     }
 
-    async create(data) { return Listing.create(data); }
+    async create(data) {
+        return await Listing.create(data);
+    }
+
     async update(id, data) {
         const listing = await Listing.findByPk(id);
         if (!listing) return null;
-        return listing.update(data);
+        return await listing.update(data);
     }
 
     async delete(id) {
@@ -29,5 +34,4 @@ export class ListingRepository {
         await listing.destroy();
         return listing;
     }
-
 }

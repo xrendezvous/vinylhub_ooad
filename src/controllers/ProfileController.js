@@ -1,6 +1,6 @@
 import { ProfileService } from "../services/ProfileService.js";
-import { UserRepository } from "../repos/impl/UserRepository.js";
-import { ListingRepository } from "../repos/impl/ListingRepository.js";
+import { UserRepository } from "../repos/UserRepository.js";
+import { ListingRepository } from "../repos/ListingRepository.js";
 
 const profileService = new ProfileService(new UserRepository(), new ListingRepository());
 
