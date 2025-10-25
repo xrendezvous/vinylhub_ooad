@@ -56,8 +56,26 @@ export class ListingService {
     }
 
     async updateListing(id, data) {
-        return await this.repo.update(id, data);
+        console.log("updateListing called with:", id, data);
+        const listing = await this.repo.findById(id);
+
+        if (!listing) {
+            console.log("Listing not found");
+            throw new Error("Listing not found");
+        }
+
+        if (data.status && !Object.values(ListingStatus).includes(data.status)) {
+            console.log("Invalid status:", data.status);
+            throw new Error("Invalid listing status");
+        }
+
+        Object.assign(listing, data);
+        await listing.save();
+
+        console.log("Saved listing:", listing.toJSON());
+        return listing;
     }
+
 
     async deleteListing(id) {
         return await this.repo.delete(id);

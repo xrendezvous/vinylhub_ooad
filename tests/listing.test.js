@@ -2,6 +2,7 @@ import request from "supertest";
 import { describe, test, expect, beforeAll } from "vitest";
 import jwt from "jsonwebtoken";
 import { app } from "../src/app.js";
+import { ListingStatus } from "../src/models/enums/ListingStatus.js";
 
 let token;
 let listingId;
@@ -58,13 +59,6 @@ describe("LISTINGS CRUD", () => {
         expect(res.statusCode).toBe(200);
     });
 
-    test("видалення оголошення", async () => {
-        const res = await request(app)
-            .delete(`/api/listings/${listingId}`)
-            .set("Authorization", `Bearer ${token}`);
-        expect(res.statusCode).toBe(200);
-    });
-
     test("створення без ціни має дати помилку", async () => {
         const res = await request(app)
             .post("/api/listings")
@@ -75,4 +69,38 @@ describe("LISTINGS CRUD", () => {
             });
         expect(res.statusCode).toBe(400);
     });
+
+    test("оновлення статусу на SOLD", async () => {
+        const res = await request(app)
+            .put(`/api/listings/${listingId}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({ status: ListingStatus.SOLD });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe(ListingStatus.SOLD);
+    });
+
+    test("оновлення статусу на CANCELLED", async () => {
+        const res = await request(app)
+            .put(`/api/listings/${listingId}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({ status: ListingStatus.CANCELLED });
+        expect(res.statusCode).toBe(200);
+        expect(res.body.status).toBe(ListingStatus.CANCELLED);
+    });
+
+    test("оновлення з невалідним статусом має дати 400", async () => {
+        const res = await request(app)
+            .put(`/api/listings/${listingId}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({ status: "INVALID_STATUS" });
+        expect(res.statusCode).toBe(400);
+    });
+
+    test("видалення оголошення", async () => {
+        const res = await request(app)
+            .delete(`/api/listings/${listingId}`)
+            .set("Authorization", `Bearer ${token}`);
+        expect(res.statusCode).toBe(200);
+    });
+
 });

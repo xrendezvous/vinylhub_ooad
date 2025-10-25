@@ -43,8 +43,22 @@ export class ListingController {
     }
 
     async update(req, res) {
-        const updated = await listingService.updateListing(req.params.id, req.body);
-        res.json(updated);
+        try {
+            console.log("UPDATE controller called with ID:", req.params.id);
+            console.log("Body:", req.body);
+
+            const updated = await listingService.updateListing(req.params.id, req.body);
+            if (!updated) {
+                console.log("Listing not found");
+                return res.status(404).json({ message: "Listing not found" });
+            }
+
+            console.log("Updated listing:", updated);
+            res.status(200).json(updated);
+        } catch (err) {
+            console.error("Error in update controller:", err.message);
+            res.status(400).json({ message: err.message });
+        }
     }
 
     async delete(req, res) {

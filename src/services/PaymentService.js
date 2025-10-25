@@ -1,5 +1,6 @@
 import { Payment } from "../models/Payment.js";
 import { PaymentStatus } from "../models/enums/PaymentStatus.js";
+import { ListingStatus } from "../models/enums/ListingStatus.js";
 
 export class PaymentService {
     constructor(repo, provider, notif, userRepo, listingRepo) {
@@ -11,24 +12,28 @@ export class PaymentService {
     }
 
     async pay(buyerId, listingId) {
+        const listing = await this.listingRepo.findById(listingId);
+        if (!listing) throw new Error("Listing not found");
+
         const payment = await this.repo.save({
             buyerId,
             listingId,
-            amount: 250,
-            currency: "USD",
+            amount: listing.price || 1200,
+            currency: "UAH",
             status: PaymentStatus.PENDING,
             createdAt: new Date()
         });
 
         await this.provider.initiatePayment(payment);
 
-        const buyer = await this.userRepo.findById(buyerId);
-        const listing = await this.listingRepo.findById(listingId);
+        listing.status = ListingStatus.SOLD;
+        await listing.save();
 
-        if (buyer && listing) {
+        const buyer = await this.userRepo.findById(buyerId);
+        if (buyer) {
             await this.notif.sendPaymentSuccess(
                 buyer.email,
-                "Listing #${listing.id}",
+                `Listing #${listing.id}`,
                 payment.amount,
                 payment.currency
             );
@@ -39,6 +44,10 @@ export class PaymentService {
 
     async checkStatus(paymentId) {
         const status = await this.provider.checkStatus(paymentId);
+        if (!Object.values(PaymentStatus).includes(status)) {
+            throw new Error("Invalid payment status");
+        }
+
         await this.repo.updateStatus(paymentId, status);
         return status;
     }
@@ -49,8 +58,16 @@ export class PaymentService {
             await this.repo.updateStatus(paymentId, PaymentStatus.REFUNDED);
 
             const payment = await this.repo.findById(paymentId);
-            const buyer = payment ? await this.userRepo.findById(payment.buyerId) : null;
+            if (!payment) throw new Error("Payment not found");
 
+            const listing = await this.listingRepo.findById(payment.listingId);
+            if (listing) {
+                // повертаємо оголошення в активний стан
+                listing.status = ListingStatus.ACTIVE;
+                await listing.save();
+            }
+
+            const buyer = await this.userRepo.findById(payment.buyerId);
             if (buyer) {
                 await this.notif.sendRefundNotice(
                     buyer.email,
