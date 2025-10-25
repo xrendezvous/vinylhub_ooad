@@ -29,4 +29,13 @@ export class AuthController {
             res.status(400).json({ error: err.message });
         }
     }
+
+    async logout(req, res) {
+        try {
+            res.status(200).json({ message: "Logged out successfully" });
+        } catch (err) {
+            res.status(400).json({ error: err.message });
+        }
+    }
+
 }

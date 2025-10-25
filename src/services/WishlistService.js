@@ -1,5 +1,3 @@
-import { WishlistItem } from "../models/WishlistItem.js";
-
 export class WishlistService {
     constructor(repo, userRepo) {
         this.repo = repo;
@@ -25,5 +23,20 @@ export class WishlistService {
             }
         }
         return Array.from(uniqueUsers.values());
+    }
+
+    async update(id, data) {
+        const wishlist = await this.repo.findById(id);
+        if (!wishlist) throw new Error("Wishlist not found");
+        Object.assign(wishlist, data);
+        await wishlist.save();
+        return wishlist;
+    }
+
+    async delete(id) {
+        const wishlist = await this.repo.findById(id);
+        if (!wishlist) return null;
+        await wishlist.destroy();
+        return wishlist;
     }
 }

@@ -1,0 +1,168 @@
+{
+  "info": {
+    "name": "VinylHub API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Full API test suite for VinylHub project (Auth, Vinyls, Listings, Wishlist, Collection, Payments, Profiles). Includes automatic token handling and logout."
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Seller",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"seller\",\n  \"email\": \"reesetest653@gmail.com\",\n  \"password\": \"123456\",\n  \"role\": \"SELLER\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register Collector",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/auth/register", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"clemont\",\n  \"email\": \"radiationkris@gmail.com\",\n  \"password\": \"123456\",\n  \"role\": \"COLLECTOR\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Seller",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) { pm.environment.set('token_seller', data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"reesetest653@gmail.com\",\n  \"password\": \"123456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login Collector",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) { pm.environment.set('token_collector', data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/auth/login", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"radiationkris@gmail.com\",\n  \"password\": \"123456\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_seller}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/auth/logout", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "auth", "logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vinyls",
+      "item": [
+        {"name": "Create Vinyl", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/vinyls"}, "body": {"mode": "raw", "raw": "{\n \"title\": \"Abbey Road\",\n \"artist\": \"The Beatles\",\n \"year\": 1969,\n \"label\": \"Apple Records\"\n}"}}},
+        {"name": "Create Vinyl 2", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/vinyls"}, "body": {"mode": "raw", "raw": "{\n \"title\": \"Dark Side of the Moon\",\n \"artist\": \"Pink Floyd\",\n \"year\": 1973,\n \"label\": \"Harvest Records\"\n}"}}},
+        {"name": "Create Vinyl 3", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/vinyls"}, "body": {"mode": "raw", "raw": "{\n \"title\": \"Nevermind\",\n \"artist\": \"Nirvana\",\n \"year\": 1991,\n \"label\": \"DGC\"\n}"}}},
+        {"name": "Get All Vinyls", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/vinyls"}}},
+        {"name": "Update Vinyl", "request": {"method": "PUT", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/vinyls/1"}, "body": {"mode": "raw", "raw": "{\n \"label\": \"EMI\"\n}"}}},
+        {"name": "Delete Vinyl", "request": {"method": "DELETE", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"}], "url": {"raw": "http://localhost:3000/api/vinyls/1"}}}
+      ]
+    },
+    {
+      "name": "Listings",
+      "item": [
+        {"name": "Create Listing", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/listings"}, "body": {"mode": "raw", "raw": "{\n \"userId\": 1,\n \"vinylId\": 1,\n \"price\": 1500,\n \"photos\": [\"cover.jpg\"]\n}"}}},
+        {"name": "Get All Listings", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/listings"}}},
+        {"name": "Create Listing 2", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/listings"}, "body": {"mode": "raw", "raw": "{\n \"userId\": 1,\n \"vinylId\": 2,\n \"price\": 2200,\n \"photos\": [\"dark_side.jpg\"]\n}"}}},
+        {"name": "Get Listing by ID", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/listings/1"}}},
+        {"name": "Create Listing with Missing Price (error)", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/listings"}, "body": {"mode": "raw", "raw": "{\n \"userId\": 1,\n \"vinylId\": 3\n}"}}},
+        {"name": "Update Listing (Status)", "request": {"method": "PUT", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/listings/1"}, "body": {"mode": "raw", "raw": "{\n \"status\": \"CANCELLED\"\n}"}}},
+        {"name": "Update Listing (Price)", "request": {"method": "PUT", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/listings/1"}, "body": {"mode": "raw", "raw": "{\n \"price\": 2000\n}"}}},
+        {"name": "Delete Listing", "request": {"method": "DELETE", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"}], "url": {"raw": "http://localhost:3000/api/listings/1"}}},
+        {"name": "Get Nonexistent Listing (Error 404)", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/listings/9999"}}}
+      ]
+    },
+    {
+      "name": "Wishlist",
+      "item": [
+        {"name": "Add to Wishlist", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/wishlist"}, "body": {"mode": "raw", "raw": "{\n \"userId\": 2,\n \"vinylId\": 1,\n \"queryText\": \"Beatles\"\n}"}}},
+        {"name": "Get Wishlist", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/wishlist/2"}}},
+        {"name": "Add Wishlist 2", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/wishlist"}, "body": {"mode": "raw", "raw": "{\n \"userId\": 2,\n \"vinylId\": 3,\n \"queryText\": \"Nirvana\"\n}"}}},
+        {"name": "Update Wishlist Item", "request": {"method": "PUT", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/wishlist/1"}, "body": {"mode": "raw", "raw": "{\n  \"queryText\": \"Updated Wishlist Query\"\n}"}}},
+        {"name": "Delete Wishlist Item", "request": {"method": "DELETE", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/wishlist/1"}}},
+        {"name": "Add Wishlist Error (missing vinylId)", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/wishlist"}, "body": {"mode": "raw", "raw": "{\n \"userId\": 2\n}"}}}
+      ]
+    },
+    {
+      "name": "Collection",
+      "item": [
+        {"name": "Add to Collection", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/collection"}, "body": {"mode": "raw", "raw": "{\n \"userId\": 2,\n \"vinylId\": 1,\n \"condition\": \"Excellent\",\n \"notes\": \"Original pressing\"\n}"}}},
+        {"name": "Get Collection", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/collection/2"}}},
+        {"name": "Add Collection 2", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/collection"}, "body": {"mode": "raw", "raw": "{\n \"userId\": 2,\n \"vinylId\": 3,\n \"condition\": \"Good\",\n \"notes\": \"Has scratches\"\n}"}}},
+        {"name": "Update Collection Item", "request": {"method": "PUT", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/collection/1"}, "body": {"mode": "raw", "raw": "{\n  \"condition\": \"Very Good\",\n  \"notes\": \"Slightly used but plays well\"\n}"}}},
+        {"name": "Delete Collection Item", "request": {"method": "DELETE", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/collection/1"}}},
+        {"name": "Add Collection Error (missing condition)", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/collection"}, "body": {"mode": "raw", "raw": "{\n \"userId\": 2,\n \"vinylId\": 1\n}"}}}
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {"name": "Get Profile", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/profile/2"}}},
+        {"name": "Update Profile", "request": {"method": "PUT", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/profile/2"}, "body": {"mode": "raw", "raw": "{\n \"username\": \"updated_collector\"\n}"}}},
+        {"name": "Get User Listings (Profile)", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/profile/2/listings"}}}
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {"name": "Pay for Listing", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/order/pay"}, "body": {"mode": "raw", "raw": "{\n \"buyerId\": 2,\n \"listingId\": 1\n}"}}},
+        {"name": "Refund Payment", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_seller}}"}], "url": {"raw": "http://localhost:3000/api/order/refund/1"}}},
+        {"name": "Payment Status Check (Mock)", "request": {"method": "GET", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"}], "url": {"raw": "http://localhost:3000/api/order/status/1"}}},
+        {"name": "Pay Error (Invalid ListingId)", "request": {"method": "POST", "header": [{"key": "Authorization", "value": "Bearer {{token_collector}}"},{"key": "Content-Type", "value": "application/json"}], "url": {"raw": "http://localhost:3000/api/order/pay"}, "body": {"mode": "raw", "raw": "{\n \"buyerId\": 2,\n \"listingId\": 9999\n}"}}}
+      ]
+    }
+  ]
+}

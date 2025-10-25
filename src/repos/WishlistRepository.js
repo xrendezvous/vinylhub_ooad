@@ -12,4 +12,21 @@ export class WishlistRepository {
     async findByUser(userId) {
         return await WishlistItem.findAll({ where: { userId } });
     }
+
+    async findById(id) {
+        return await WishlistItem.findByPk(id);  // ✅ тут тепер правильна модель
+    }
+
+    async update(id, data) {
+        const item = await WishlistItem.findByPk(id);
+        if (!item) return null;
+        return await item.update(data);
+    }
+
+    async delete(id) {
+        const item = await WishlistItem.findByPk(id);
+        if (!item) return null;
+        await item.destroy();
+        return item;
+    }
 }

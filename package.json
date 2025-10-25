@@ -4,9 +4,9 @@
   "type": "module",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
-    "test": "vitest run --environment node"
+    "start": "cross-env NODE_ENV=production node src/app.js",
+    "dev": "cross-env NODE_ENV=development nodemon src/app.js",
+    "test": "cross-env NODE_ENV=test vitest run --environment node"
   },
   "vitest": {
     "setupFiles": ["tests/setup.js"]

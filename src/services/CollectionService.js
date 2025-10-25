@@ -4,12 +4,16 @@ export class CollectionService {
     }
 
     async addItem(userId, vinylId, condition, notes, photos) {
+        if (!userId || !vinylId || !condition) {
+            throw new Error("userId, vinylId, and condition are required");
+        }
+
         return await this.repo.create({
             userId,
             vinylId,
             condition,
-            notes,
-            photos,
+            notes: notes || null,
+            photos: photos || null,
             addedAt: new Date()
         });
     }
@@ -19,10 +23,14 @@ export class CollectionService {
     }
 
     async updateItem(id, data) {
-        return await this.repo.update(id, data);
+        const updated = await this.repo.update(id, data);
+        if (!updated) throw new Error("Collection item not found");
+        return updated;
     }
 
     async deleteItem(id) {
-        return await this.repo.delete(id);
+        const deleted = await this.repo.delete(id);
+        if (!deleted) throw new Error("Collection item not found");
+        return deleted;
     }
 }

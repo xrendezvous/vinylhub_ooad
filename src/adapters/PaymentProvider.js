@@ -3,20 +3,27 @@ export class PaymentProvider {
         if (process.env.NODE_ENV === "test") {
             return `https://mockpay.local/checkout/${payment.id}`;
         }
-        throw new Error("initiatePayment() must be implemented by subclass");
+        console.log(`Simulating payment for payment ID ${payment.id}...`);
+        await new Promise(resolve => setTimeout(resolve, 500));
+        console.log(`Payment ${payment.id} successfully initiated.`);
+        return `https://mockpay.local/success/${payment.id}`
     }
 
     async checkStatus(paymentId) {
         if (process.env.NODE_ENV === "test") {
             return "SUCCESS";
         }
-        throw new Error("checkStatus() must be implemented by subclass");
+        console.log(`Checking payment status for ID ${paymentId}...`);
+        return "COMPLETED";
     }
 
     async refund(paymentId) {
         if (process.env.NODE_ENV === "test") {
             return true;
         }
-        throw new Error("refund() must be implemented by subclass");
+        console.log(`Simulating refund for payment ID ${paymentId}...`);
+        await new Promise(resolve => setTimeout(resolve, 300));
+        console.log(`Refund for payment ${paymentId} successful.`);
+        return true;
     }
 }

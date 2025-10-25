@@ -18,6 +18,8 @@ export class CollectionController {
         try {
             const { userId } = req.params;
             const items = await collectionService.getUserCollection(userId);
+            if (!items || items.length === 0)
+                return res.status(404).json({ message: "Collection not found" });
             res.json(items);
         } catch (err) {
             res.status(500).json({ error: err.message });
@@ -30,6 +32,8 @@ export class CollectionController {
             const updated = await collectionService.updateItem(id, req.body);
             res.json(updated);
         } catch (err) {
+            if (err.message === "Collection item not found")
+                return res.status(404).json({ message: err.message });
             res.status(400).json({ error: err.message });
         }
     }
@@ -40,6 +44,8 @@ export class CollectionController {
             await collectionService.deleteItem(id);
             res.json({ message: "Item deleted successfully" });
         } catch (err) {
+            if (err.message === "Collection item not found")
+                return res.status(404).json({ message: err.message });
             res.status(400).json({ error: err.message });
         }
     }

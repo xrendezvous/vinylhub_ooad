@@ -21,6 +21,7 @@ const profile = new ProfileController();
 // Auth
 router.post("/auth/register", (req, res) => auth.register(req, res));
 router.post("/auth/login", (req, res) => auth.login(req, res));
+router.post("/auth/logout", authMiddleware, auth.logout);
 
 // Listings
 router.post("/listings", authMiddleware, sellerOnly, (req, res) =>
@@ -46,6 +47,12 @@ router.delete("/vinyls/:id", authMiddleware,(req, res) => vinyl.delete(req, res)
 // Wishlist
 router.post("/wishlist", authMiddleware,(req, res) => wishlist.addWishlist(req, res));
 router.get("/wishlist/:userId", authMiddleware,(req, res) => wishlist.getUserWishlist(req, res));
+router.put("/wishlist/:id", authMiddleware, (req, res) =>
+    wishlist.update(req, res)
+);
+router.delete("/wishlist/:id", authMiddleware, (req, res) =>
+    wishlist.delete(req, res)
+);
 
 // Collection
 router.post("/collection", authMiddleware,(req, res) => collection.addItem(req, res));

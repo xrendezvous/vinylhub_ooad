@@ -12,22 +12,26 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api", routes);
-
-const PORT = process.env.PORT || 3000;
-
 export { app };
 
-if (process.env.NODE_ENV !== "test") {
-    const startServer = async () => {
-        try {
-            await connectDB();
-            await seedDatabase();
-            app.listen(PORT, () => {
-                console.log(`Server running on http://localhost:${PORT}`);
-            });
-        } catch (error) {
-            console.error("Failed to start server:", error);
-        }
-    };
+const startServer = async () => {
+    try {
+        await connectDB();
+        console.log("Database connected.");
+
+        await seedDatabase();
+        console.log("Database seeded.");
+
+        const PORT = process.env.PORT || 3000;
+        app.listen(PORT, "0.0.0.0", () => {
+            console.log(`Server running on http://localhost:${PORT}`);
+        });
+    } catch (error) {
+        console.error("Failed to start server:", error);
+        process.exit(1);
+    }
+};
+
+if (process.env.NODE_ENV !== "test" && process.env.NODE_ENV !== "vitest") {
     startServer();
 }

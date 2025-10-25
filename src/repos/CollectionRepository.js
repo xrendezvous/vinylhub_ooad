@@ -13,6 +13,10 @@ export class CollectionRepository {
         return await CollectionItem.findAll({ where: { vinylId } });
     }
 
+    async findById(id) {
+        return await CollectionItem.findByPk(id);
+    }
+
     async update(id, data) {
         const item = await CollectionItem.findByPk(id);
         if (!item) return null;
