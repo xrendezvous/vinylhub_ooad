@@ -14,7 +14,7 @@ export class WishlistRepository {
     }
 
     async findById(id) {
-        return await WishlistItem.findByPk(id);  // ✅ тут тепер правильна модель
+        return await WishlistItem.findByPk(id);
     }
 
     async update(id, data) {
