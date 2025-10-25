@@ -15,16 +15,19 @@ app.use("/api", routes);
 
 const PORT = process.env.PORT || 3000;
 
-const startServer = async () => {
-    try {
-        await connectDB();
-        await seedDatabase();
-        app.listen(PORT, () => {
-            console.log(`Server running on http://localhost:${PORT}`);
-        });
-    } catch (error) {
-        console.error("Failed to start server:", error);
-    }
-};
+export { app };
 
-startServer();
+if (process.env.NODE_ENV !== "test") {
+    const startServer = async () => {
+        try {
+            await connectDB();
+            await seedDatabase();
+            app.listen(PORT, () => {
+                console.log(`Server running on http://localhost:${PORT}`);
+            });
+        } catch (error) {
+            console.error("Failed to start server:", error);
+        }
+    };
+    startServer();
+}

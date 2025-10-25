@@ -18,9 +18,15 @@ export class WishlistController {
         try {
             const { userId } = req.params;
             const items = await wishlistService.repo.findByUser(userId);
+
+            if (!items || items.length === 0) {
+                return res.status(404).json({ error: "Wishlist not found" });
+            }
+
             res.json(items);
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     }
+
 }

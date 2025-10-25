@@ -33,6 +33,7 @@ router.delete("/listings/:id", authMiddleware, sellerOnly,(req, res) => listing.
 
 // Profiles
 router.get("/profile/:userId", authMiddleware,(req, res) => profile.getProfile(req, res));
+router.put("/profile/:userId", authMiddleware, (req, res) => profile.updateProfile(req, res));
 router.get("/profile/:userId/listings", authMiddleware,(req, res) => profile.getUserListings(req, res));
 
 // Vinyls
@@ -53,7 +54,7 @@ router.put("/collection/:id", authMiddleware, (req, res) => collection.updateIte
 router.delete("/collection/:id", authMiddleware,(req, res) => collection.deleteItem(req, res));
 
 // Orders (Payments)
-router.post("/order/pay", authMiddleware, sellerOnly,(req, res) => order.pay(req, res));
+router.post("/order/pay", authMiddleware, (req, res) => order.pay(req, res));
 router.post("/order/refund/:paymentId", authMiddleware, sellerOnly,(req, res) => order.refund(req, res));
 
 export default router;

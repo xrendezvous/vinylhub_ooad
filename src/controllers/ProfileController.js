@@ -25,4 +25,25 @@ export class ProfileController {
             res.status(500).json({ error: err.message });
         }
     }
+
+    async updateProfile(req, res) {
+        try {
+            const { userId } = req.params;
+            const updates = req.body;
+
+            if (!updates || Object.keys(updates).length === 0) {
+                return res.status(400).json({ error: "No fields to update" });
+            }
+
+            const updatedUser = await profileService.updateProfile(userId, updates);
+
+            if (!updatedUser) {
+                return res.status(404).json({ error: "User not found" });
+            }
+
+            res.json(updatedUser);
+        } catch (err) {
+            res.status(400).json({ error: err.message });
+        }
+    }
 }

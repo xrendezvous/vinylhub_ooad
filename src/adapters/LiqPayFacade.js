@@ -2,7 +2,7 @@ import { PaymentProvider } from "./PaymentProvider.js";
 import { PaymentStatus } from "../models/enums/PaymentStatus.js";
 import { Payment } from "../models/Payment.js";
 
-export class LiqPayPaymentProvider extends PaymentProvider {
+export class LiqPayFacade extends PaymentProvider {
     async initiatePayment(payment) {
         const paymentUrl = `https://www.liqpay.ua/api/checkout?amount=${payment.amount}&order_id=${payment.id}`;
         return paymentUrl;

@@ -1,11 +1,15 @@
 {
   "name": "vinylhub_ooad",
   "version": "1.0.0",
+  "type": "module",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run --environment node"
+  },
+  "vitest": {
+    "setupFiles": ["tests/setup.js"]
   },
   "dependencies": {
     "axios": "^1.12.2",
@@ -22,7 +26,11 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "cross-env": "^10.1.0",
+    "nodemon": "^3.0.1",
+    "sqlite3": "^5.1.7",
+    "supertest": "^7.1.4",
+    "vitest": "^2.1.9"
   },
   "repository": {
     "type": "git",

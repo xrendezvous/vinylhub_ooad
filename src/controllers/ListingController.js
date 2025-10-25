@@ -3,17 +3,30 @@ import { ListingRepository } from "../repos/ListingRepository.js";
 import { WishlistService } from "../services/WishlistService.js";
 import { WishlistRepository } from "../repos/WishlistRepository.js";
 import { EmailProvider } from "../adapters/EmailProvider.js";
+import { UserRepository } from "../repos/UserRepository.js";
+import { VinylRepository } from "../repos/VinylRepository.js";
 
-const wishlistService = new WishlistService(new WishlistRepository());
-const listingService = new ListingService(new ListingRepository(), new EmailProvider(), wishlistService);
+const wishlistService = new WishlistService(
+    new WishlistRepository(),
+    new UserRepository()
+);
+const listingService = new ListingService(
+    new ListingRepository(),
+    new EmailProvider(),
+    wishlistService,
+    new UserRepository(),
+    new VinylRepository()
+);
 
 export class ListingController {
     async createListing(req, res) {
         try {
-            const { userId, vinylId, price, photos } = req.body;
+            const { vinylId, price, photos } = req.body;
+            const userId = req.user?.id || req.body.userId;
             const listing = await listingService.createListing(userId, vinylId, price, photos);
             res.status(201).json(listing);
         } catch (err) {
+            console.error("Error creating listing:", err);
             res.status(400).json({ error: err.message });
         }
     }
