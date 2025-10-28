@@ -5,9 +5,9 @@ services:
     image: postgres:15
     container_name: vinylhub
     environment:
-      POSTGRES_DB: vinylhub
-      POSTGRES_USER: xrendezvous
-      POSTGRES_PASSWORD: Xzvv9843
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
     ports:
       - '5432:5432'
     volumes:
