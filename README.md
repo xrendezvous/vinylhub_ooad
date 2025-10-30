@@ -32,17 +32,21 @@ VinylHub — це RESTful API-платформа для керування ві�
    DB_NAME=vinylhub_db
    DB_USER=postgres
    DB_PASS=your_password
-   DB_HOST=localhost
-   DB_PORT=5432
+   DB_HOST=db
    JWT_SECRET=super_secret_key
    SMTP_USER=vinylhub_platform@ukr.net
    SMTP_PASS=ozEe4wDlavt5WFyA
 
-4. **Запустити через Docker**
+4. **Очистити старі volume**
+   Потрібно це робити перед першим білдом контейнера
+   ```bash
+   docker-compose down -v
+
+5. **Запустити через Docker**
     ```bash
    docker compose up --build
    
-5. **Запуск тестів (усього 8 модулів та 45 тестів)**
+6. **Запуск тестів (усього 8 модулів та 45 тестів)**
     ```bash
    npm test
    
